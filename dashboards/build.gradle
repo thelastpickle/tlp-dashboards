@@ -16,13 +16,13 @@ task startDependencies(type:Exec) {
     environment  "DASHBOARD_DIR", dashboardOutput
     environment "BUILD_DIR", dashboardOutput
 
-    commandLine "docker-compose", "run", "start_dependencies"
+    commandLine "docker-compose",  "--compatibility", "run", "start_dependencies"
 }
 
 task preview(type:Exec) {
     group = "dashboard"
     description = "Start the dashboard dev environment"
-    commandLine "docker-compose",  "up"
+    commandLine "docker-compose", "--compatibility", "up"
     
     environment "DASHBOARD_DIR", dashboardOutput
     environment "BUILD_DIR", dashboardOutput

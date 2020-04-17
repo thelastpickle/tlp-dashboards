@@ -54,3 +54,98 @@ scrape_configs:
           datacenter: AwesomeDC
           rack: RadRack
           node: stress01
+
+  - job_name: 'reaper'
+    metrics_path: '/prometheusMetrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['reaper:8081']
+        labels:
+          environment: PickleLabs
+          cluster: FunkyTesting
+          datacenter: AwesomeDC
+          rack: RadRack
+          node: stress01
+    metric_relabel_configs:
+      # io_cassandrareaper_service_RepairRunner_segmentsDone_3115_7c326d904ba811eaa7a0634758da0ae9 0.0
+      # io_cassandrareaper_service_RepairRunner_segmentsDone_3115_7b9ce4504ba811eaa7a0634758da0ae9 21.0
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_segments(Done|Total)_([^_]+)_([^_]+)$"
+        action: drop
+      # io_cassandrareaper_service_RepairRunner_segmentsDone_3115_tlpstress_7b9ce4504ba811eaa7a0634758da0ae9 21.0
+      # io_cassandrareaper_service_RepairRunner_segmentsDone_3115_reaperdemo_7c326d904ba811eaa7a0634758da0ae9 0.0
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_segments(Done|Total)_(.*)_(.*)_(.*)"
+        target_label: cluster
+        replacement: '${2}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_segments(Done|Total)_(.*)_(.*)_(.*)"
+        target_label: keyspace
+        replacement: '${3}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_segments(Done|Total)_(.*)_(.*)_(.*)"
+        target_label: runid
+        replacement: '${4}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_segments(Done|Total)_.*"
+        target_label: __name__
+        replacement: 'io_cassandrareaper_service_RepairRunner_segments${1}'
+      # io_cassandrareaper_service_RepairRunner_repairProgress_3115_7b9ce4504ba811eaa7a0634758da0ae9 0.30000001192092896
+      # io_cassandrareaper_service_RepairRunner_repairProgress_3115_7c326d904ba811eaa7a0634758da0ae9 0.0
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_repairProgress_([^_]+)_([^_]+)$"
+        action: drop
+      # io_cassandrareaper_service_RepairRunner_repairProgress_3115_reaperdemo_7c326d904ba811eaa7a0634758da0ae9 0.0
+      # io_cassandrareaper_service_RepairRunner_repairProgress_3115_tlpstress_7b9ce4504ba811eaa7a0634758da0ae9 0.30000001192092896
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_repairProgress_(.*)_(.*)_(.*)"
+        target_label: cluster
+        replacement: '${1}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_repairProgress_(.*)_(.*)_(.*)"
+        target_label: keyspace
+        replacement: '${2}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_repairProgress_(.*)_(.*)_(.*)"
+        target_label: runid
+        replacement: '${3}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_RepairRunner_repairProgress_.*"
+        target_label: __name__
+        replacement: "io_cassandrareaper_service_RepairRunner_repairProgress"
+      # io_cassandrareaper_service_SegmentRunner_runRepair_null_3115_reaperdemo{quantile="0.999",} 10.017385293
+      # io_cassandrareaper_service_SegmentRunner_runRepair_null_3115_reaperdemo_count 21.0
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_runRepair_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: coordinator
+        replacement: '${1}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_runRepair_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: cluster
+        replacement: '${2}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_runRepair_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: keyspace
+        replacement: '${3}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_runRepair_.*"
+        target_label: __name__
+        replacement: "io_cassandrareaper_service_SegmentRunner_runRepair"
+      # io_cassandrareaper_service_SegmentRunner_repairing_null_3115_tlpstress{quantile="0.99",} 1.496205255
+      # io_cassandrareaper_service_SegmentRunner_repairing_null_3115_tlpstress_count 21.0
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_repairing_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: coordinator
+        replacement: '${1}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_repairing_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: cluster
+        replacement: '${2}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_repairing_([^_]+)_([^_]+)_([^_]+)(_count)?"
+        target_label: keyspace
+        replacement: '${3}'
+      - source_labels: [__name__]
+        regex: "io_cassandrareaper_service_SegmentRunner_repairing_.*"
+        target_label: __name__
+        replacement: "io_cassandrareaper_service_SegmentRunner_repairing"
