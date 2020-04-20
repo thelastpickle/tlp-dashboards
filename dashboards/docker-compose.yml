@@ -114,6 +114,7 @@ services:
       CASSANDRA_NUM_TOKENS: 1
       CASSANDRA_SEEDS: "cassandra,cassandra2"
       LOCAL_JMX: "no"
+      JVM_EXTRA_OPTS: "-Djava.rmi.server.hostname=cassandra"
     networks:
       - tlp_dashboards_net
     deploy:
@@ -141,6 +142,7 @@ services:
       CASSANDRA_NUM_TOKENS: 1
       CASSANDRA_SEEDS: "cassandra,cassandra2"
       LOCAL_JMX: "no"
+      JVM_EXTRA_OPTS: "-Djava.rmi.server.hostname=cassandra2"
     deploy:
       resources:
         limits:
@@ -157,7 +159,9 @@ services:
       - tlp_dashboards_net
     environment:
       REAPER_CASS_CONTACT_POINTS: "cassandra"
-    links:
+      REAPER_JMX_AUTH_USERNAME: "reaperUser"
+      REAPER_JMX_AUTH_PASSWORD: "reaperPass"
+    depends_on:
       - cassandra
     deploy:
       resources:
